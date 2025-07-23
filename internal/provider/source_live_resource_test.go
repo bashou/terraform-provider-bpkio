@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-// 1. Basic creation with required fields
+// 1. Basic creation with required fields.
 func TestAccSourceLive_Basic(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
 	if apiKey == "" {
@@ -50,7 +50,7 @@ resource "bpkio_source_live" "test" {
 `, apiKey)
 }
 
-// 2. Invalid URL (asset does not exist)
+// 2. Invalid URL (asset does not exist).
 func TestAccSourceLive_InvalidURL(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
 	if apiKey == "" {
@@ -82,7 +82,7 @@ resource "bpkio_source_live" "test" {
 `, apiKey)
 }
 
-// 3. Missing required field (name)
+// 3. Missing required field (name).
 func TestAccSourceLive_MissingName(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
 	if apiKey == "" {
@@ -109,7 +109,7 @@ resource "bpkio_source_live" "test" {
 	})
 }
 
-// 4. Duplicate name+url (if API returns error)
+// 4. Duplicate name+url (if API returns error).
 func TestAccSourceLive_DuplicateNameURL(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
 	if apiKey == "" {
@@ -149,7 +149,7 @@ resource "bpkio_source_live" "second" {
 `, apiKey)
 }
 
-// 5. Check computed fields are always set
+// 5. Check computed fields are always set.
 func TestAccSourceLive_ComputedFields(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
 	if apiKey == "" {
@@ -173,7 +173,7 @@ func TestAccSourceLive_ComputedFields(t *testing.T) {
 	})
 }
 
-// 6. Minimal config (omit optional description, multi_period, origin)
+// 6. Minimal config (omit optional description, multi_period, origin).
 func TestAccSourceLive_MinimalConfig(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
 	if apiKey == "" {
@@ -196,7 +196,7 @@ func TestAccSourceLive_MinimalConfig(t *testing.T) {
 	})
 }
 
-// 7. Long names and special characters
+// 7. Long names and special characters.
 func TestAccSourceLive_LongSpecialName(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
 	if apiKey == "" {

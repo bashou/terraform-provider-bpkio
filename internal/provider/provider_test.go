@@ -28,9 +28,7 @@ func testAccPreCheck(t *testing.T) {
 	}
 }
 
-/* ------------------------------------------------------------------------- */
-/* Acceptance test                                                            */
-/* ------------------------------------------------------------------------- */
+// Acceptance test.
 func TestAccProvider_basic(t *testing.T) {
 
 	/* 3) Run the Terraform test case */

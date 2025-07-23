@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-// Valid Ad server
+// Valid Ad server.
 var adServerURL = "https://vast-prep.staging.olyzon.tv/sources/1042586b/serve"
 
 func TestAccSourceAdServer_Basic(t *testing.T) {
@@ -23,7 +23,7 @@ func TestAccSourceAdServer_Basic(t *testing.T) {
 	}
 	resourceName := "bpkio_source_adserver.test"
 
-	// This URL MUST point to a real, working adserver in your environment!
+	// This URL MUST point to a real, working adserver in your environment.
 	adServerURL := "https://vast-prep.staging.olyzon.tv/sources/1042586b/serve"
 
 	resource.Test(t, resource.TestCase{

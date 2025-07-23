@@ -164,7 +164,7 @@ func TestAccServiceAdInsertion_ImportStateAndDrift(t *testing.T) {
 	})
 }
 
-// // --- Error cases: try creating with invalid source/adserver id (should error out) ---
+// --- Error cases: try creating with invalid source/adserver id (should error out) ---.
 
 func TestAccServiceAdInsertion_InvalidSource(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
@@ -202,7 +202,7 @@ func TestAccServiceAdInsertion_InvalidAdServer(t *testing.T) {
 	})
 }
 
-// --- Config helpers ---
+// --- Config helpers ---.
 
 func testAccServiceAdInsertionConfig(apiKey string) string {
 	return fmt.Sprintf(`
@@ -253,7 +253,7 @@ resource "bpkio_service_ad_insertion" "test" {
 `, apiKey, SlateURL, LiveURL, AdServerURL)
 }
 
-// Change live source name
+// Change live source name.
 func testAccServiceAdInsertionConfigWithName(apiKey, serviceName string) string {
 	return fmt.Sprintf(`
 provider "bpkio" {
@@ -303,7 +303,7 @@ resource "bpkio_service_ad_insertion" "test" {
 `, apiKey, SlateURL, LiveURL, AdServerURL, serviceName)
 }
 
-// Change live source name
+// Change live source name.
 func testAccServiceAdInsertionConfigWithLiveName(apiKey, liveName string) string {
 	return fmt.Sprintf(`
 provider "bpkio" {
@@ -402,7 +402,7 @@ resource "bpkio_service_ad_insertion" "test" {
 `, apiKey, SlateURL, liveURL, AdServerURL)
 }
 
-// Change slate name
+// Change slate name.
 func testAccServiceAdInsertionConfigWithSlateName(apiKey, slateName string) string {
 	return fmt.Sprintf(`
 provider "bpkio" {
@@ -452,7 +452,7 @@ resource "bpkio_service_ad_insertion" "test" {
 `, apiKey, slateName, SlateURL, LiveURL, AdServerURL)
 }
 
-// Invalid source (bad id)
+// Invalid source (bad id).
 func testAccServiceAdInsertionConfigWithBadSource(apiKey string, badSourceID int) string {
 	return fmt.Sprintf(`
 provider "bpkio" {
@@ -497,7 +497,7 @@ resource "bpkio_service_ad_insertion" "adservice" {
 `, SlateURL, AdServerURL, apiKey, badSourceID)
 }
 
-// Invalid ad server (bad id)
+// Invalid ad server (bad id).
 func testAccServiceAdInsertionConfigWithBadAdServer(apiKey string, badAdServerID int) string {
 	return fmt.Sprintf(`
 provider "bpkio" {

@@ -408,9 +408,9 @@ func (r *serviceAdInsertionResource) Create(
 	req resource.CreateRequest,
 	resp *resource.CreateResponse,
 ) {
-	//--------------------------------------------------------------------
-	// 1. Decode plan
-	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------.
+	// 1. Decode plan.
+	//--------------------------------------------------------------------.
 	var plan serviceAdInsertionResourceModel
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -418,9 +418,9 @@ func (r *serviceAdInsertionResource) Create(
 		return
 	}
 
-	//--------------------------------------------------------------------
-	// 2. Convert plan -> API input
-	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------.
+	// 2. Convert plan -> API input.
+	//--------------------------------------------------------------------.
 	// Tags
 	var tags []string
 	if !plan.Tags.IsNull() && !plan.Tags.IsUnknown() {
@@ -436,7 +436,7 @@ func (r *serviceAdInsertionResource) Create(
 		Tags: tags,
 	}
 
-	// Optional fields
+	// Optional fields.
 	if plan.TranscodingProfile != nil {
 		input.TranscodingProfile = &broadpeakio.Identifiable{
 			Id: uint(plan.TranscodingProfile.ID.ValueInt64()),
@@ -451,7 +451,7 @@ func (r *serviceAdInsertionResource) Create(
 		input.EnableAdTranscoding = plan.EnableAdTranscoding.ValueBool()
 	}
 
-	// LiveAdPreRoll
+	// LiveAdPreRoll.
 	if plan.LiveAdPreRoll != nil {
 		input.LiveAdPreRoll = &broadpeakio.LiveAdPreRoll{
 			MaxDuration: uint(plan.LiveAdPreRoll.MaxDuration.ValueInt64()),
@@ -464,7 +464,7 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	// LiveAdReplacement
+	// LiveAdReplacement.
 	if plan.LiveAdReplacement != nil {
 		input.LiveAdReplacement = &broadpeakio.LiveAdReplacement{}
 		if !plan.LiveAdReplacement.AdServer.ID.IsNull() {
@@ -484,7 +484,7 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	// ServerSideAdTracking
+	// ServerSideAdTracking.
 	if plan.ServerSideAdTracking != nil {
 		input.ServerSideAdTracking = &broadpeakio.ServerSideAdTracking{
 			Enable:                          plan.ServerSideAdTracking.Enable.ValueBool(),
@@ -492,7 +492,7 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	// AdvancedOptions
+	// AdvancedOptions.
 	if plan.AdvancedOptions != nil && plan.AdvancedOptions.AuthorizationHeader != nil {
 		input.AdvancedOptions = &broadpeakio.AdvancedOptions{
 			AuthorizationHeader: broadpeakio.AuthorizationHeader{
@@ -502,18 +502,18 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	//--------------------------------------------------------------------
-	// 3. Call Broadpeak API
-	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------.
+	// 3. Call Broadpeak API.
+	//--------------------------------------------------------------------.
 	service, err := r.client.CreateAdInsertion(input)
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating Ad-Insertion", err.Error())
 		return
 	}
 
-	//--------------------------------------------------------------------
-	// 4. Build Terraform state
-	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------.
+	// 4. Build Terraform state.
+	//--------------------------------------------------------------------.
 	tagsList, diags := types.ListValueFrom(ctx, types.StringType, service.Tags)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -532,7 +532,7 @@ func (r *serviceAdInsertionResource) Create(
 		EnableAdTranscoding: types.BoolValue(service.EnableAdTranscoding),
 	}
 
-	// Server-side ad-tracking
+	// Server-side ad-tracking.
 	if service.ServerSideAdTracking.Enable {
 		state.ServerSideAdTracking = &serverSideAdTrackingModel{
 			Enable:                          types.BoolValue(service.ServerSideAdTracking.Enable),
@@ -540,7 +540,7 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	// Transcoding profile
+	// Transcoding profile.
 	if service.TranscodingProfile.Id != 0 {
 		state.TranscodingProfile = &transcodingProfileDataSourceModel{
 			ID:         types.Int64Value(int64(service.TranscodingProfile.Id)),
@@ -550,7 +550,7 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	// Source
+	// Source.
 	if service.Source.Id != 0 {
 		state.Source = &sourceLiteModel{
 			ID:          types.Int64Value(int64(service.Source.Id)),
@@ -562,7 +562,7 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	// LiveAdReplacement (ensure spot_aware.mode always set)
+	// LiveAdReplacement (ensure spot_aware.mode always set).
 	if service.LiveAdReplacement.AdServer.Id != 0 {
 		mode := service.LiveAdReplacement.SpotAware.Mode
 		if mode == "" {
@@ -589,7 +589,7 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	// LiveAdPreRoll
+	// LiveAdPreRoll.
 	if service.LiveAdPreRoll.AdServer.Id != 0 {
 		state.LiveAdPreRoll = &liveAdPrerollLiteModel{
 			AdServer: adServerLiteModel{
@@ -603,7 +603,7 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	// Advanced options
+	// Advanced options.
 	if service.AdvancedOptions.AuthorizationHeader.Name != "" || service.AdvancedOptions.AuthorizationHeader.Value != "" {
 		state.AdvancedOptions = &advancedOptionsModel{
 			AuthorizationHeader: &authorizationHeaderModel{
@@ -613,9 +613,9 @@ func (r *serviceAdInsertionResource) Create(
 		}
 	}
 
-	//--------------------------------------------------------------------
-	// 5. Save state
-	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------.
+	// 5. Save state.
+	//--------------------------------------------------------------------.
 	diags = resp.State.Set(ctx, state)
 	resp.Diagnostics.Append(diags...)
 }
@@ -636,7 +636,7 @@ func (r *serviceAdInsertionResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 
-	// Tags: handle missing or empty slices safely
+	// Tags: handle missing or empty slices safely.
 	tagsList, diags := types.ListValueFrom(ctx, types.StringType, service.Tags)
 	resp.Diagnostics.Append(diags...)
 
@@ -658,7 +658,7 @@ func (r *serviceAdInsertionResource) Read(ctx context.Context, req resource.Read
 		AdvancedOptions:      nil,
 	}
 
-	// ServerSideAdTracking
+	// ServerSideAdTracking.
 	if service.ServerSideAdTracking.Enable || service.ServerSideAdTracking.CheckAdMediaSegmentAvailability {
 		state.ServerSideAdTracking = &serverSideAdTrackingModel{
 			Enable:                          types.BoolValue(service.ServerSideAdTracking.Enable),
@@ -666,7 +666,7 @@ func (r *serviceAdInsertionResource) Read(ctx context.Context, req resource.Read
 		}
 	}
 
-	// Source (defensively set all optional/computed string fields)
+	// Source (defensively set all optional/computed string fields).
 	if service.Source.Id != 0 {
 		state.Source = &sourceLiteModel{
 			ID:          types.Int64Value(int64(service.Source.Id)),
@@ -677,7 +677,7 @@ func (r *serviceAdInsertionResource) Read(ctx context.Context, req resource.Read
 			MultiPeriod: types.BoolValue(service.Source.MultiPeriod),
 		}
 	} else {
-		// Defensive: Always set to empty even if not present
+		// Defensive: Always set to empty even if not present.
 		state.Source = &sourceLiteModel{
 			ID:          types.Int64Null(),
 			Name:        types.StringValue(""),
@@ -688,7 +688,7 @@ func (r *serviceAdInsertionResource) Read(ctx context.Context, req resource.Read
 		}
 	}
 
-	// TranscodingProfile
+	// TranscodingProfile.
 	if service.TranscodingProfile.Id != 0 {
 		state.TranscodingProfile = &transcodingProfileDataSourceModel{
 			ID:         types.Int64Value(int64(service.TranscodingProfile.Id)),
@@ -705,7 +705,7 @@ func (r *serviceAdInsertionResource) Read(ctx context.Context, req resource.Read
 		}
 	}
 
-	// LiveAdReplacement
+	// LiveAdReplacement.
 	if service.LiveAdReplacement.AdServer.Id != 0 || service.LiveAdReplacement.GapFiller.Id != 0 {
 		var gapFiller gapFillerModel
 		if service.LiveAdReplacement.GapFiller.Id != 0 {
@@ -743,7 +743,7 @@ func (r *serviceAdInsertionResource) Read(ctx context.Context, req resource.Read
 		}
 	}
 
-	// LiveAdPreRoll
+	// LiveAdPreRoll.
 	if service.LiveAdPreRoll.AdServer.Id != 0 {
 		state.LiveAdPreRoll = &liveAdPrerollLiteModel{
 			AdServer: adServerLiteModel{
@@ -757,7 +757,7 @@ func (r *serviceAdInsertionResource) Read(ctx context.Context, req resource.Read
 		}
 	}
 
-	// AdvancedOptions
+	// AdvancedOptions.
 	if service.AdvancedOptions.AuthorizationHeader.Name != "" || service.AdvancedOptions.AuthorizationHeader.Value != "" {
 		state.AdvancedOptions = &advancedOptionsModel{
 			AuthorizationHeader: &authorizationHeaderModel{
@@ -767,12 +767,12 @@ func (r *serviceAdInsertionResource) Read(ctx context.Context, req resource.Read
 		}
 	}
 
-	// Set the refreshed state
+	// Set the refreshed state.
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
 
-// Helper
+// Helper.
 func toStringOrEmpty(s string) types.String {
 	if s == "" {
 		return types.StringValue("")
@@ -780,21 +780,9 @@ func toStringOrEmpty(s string) types.String {
 	return types.StringValue(s)
 }
 
-// Helpers to handle possibly-missing API fields:
-func toStringOrNull(val string) types.String {
-	if val == "" {
-		return types.StringNull()
-	}
-	return types.StringValue(val)
-}
-func toBoolOrNull(val bool) types.Bool {
-	// Only use Null if you have an "unknown" state, otherwise just use Value
-	return types.BoolValue(val)
-}
-
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	// Retrieve values from plan and current state
+	// Retrieve values from plan and current state.
 	var plan serviceAdInsertionResourceModel
 	// Get planned changes
 	diags := req.Plan.Get(ctx, &plan)
@@ -803,7 +791,7 @@ func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	// Convert from Terraform model to API model
+	// Convert from Terraform model to API model.
 	var tags []string
 	if !plan.Tags.IsNull() && !plan.Tags.IsUnknown() {
 		diags = plan.Tags.ElementsAs(ctx, &tags, false)
@@ -818,33 +806,33 @@ func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.Up
 		Tags: tags,
 	}
 
-	// Add TranscodingProfile if provided
+	// Add TranscodingProfile if provided.
 	if plan.TranscodingProfile != nil {
 		serviceData.TranscodingProfile = &broadpeakio.Identifiable{
 			Id: uint(plan.TranscodingProfile.ID.ValueInt64()),
 		}
 	}
 
-	// Add Source if provided
+	// Add Source if provided.
 	if plan.Source != nil {
 		serviceData.Source = &broadpeakio.Identifiable{
 			Id: uint(plan.Source.ID.ValueInt64()),
 		}
 	}
 
-	// Add EnableAdTranscoding if provided
+	// Add EnableAdTranscoding if provided.
 	if !plan.EnableAdTranscoding.IsNull() {
 		serviceData.EnableAdTranscoding = plan.EnableAdTranscoding.ValueBool()
 	}
 
-	// Add LiveAdPreRoll if provided
+	// Add LiveAdPreRoll if provided.
 	if plan.LiveAdPreRoll != nil {
 		serviceData.LiveAdPreRoll = &broadpeakio.LiveAdPreRoll{
 			MaxDuration: uint(plan.LiveAdPreRoll.MaxDuration.ValueInt64()),
 			Offset:      uint(plan.LiveAdPreRoll.Offset.ValueInt64()),
 		}
 
-		// Add AdServer if provided within LiveAdPreRoll
+		// Add AdServer if provided within LiveAdPreRoll.
 		if !plan.LiveAdPreRoll.AdServer.ID.IsNull() {
 			serviceData.LiveAdPreRoll.AdServer = &broadpeakio.Identifiable{
 				Id: uint(plan.LiveAdPreRoll.AdServer.ID.ValueInt64()),
@@ -852,25 +840,25 @@ func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.Up
 		}
 	}
 
-	// Add LiveAdReplacement if provided
+	// Add LiveAdReplacement if provided.
 	if plan.LiveAdReplacement != nil {
 		serviceData.LiveAdReplacement = &broadpeakio.LiveAdReplacement{}
 
-		// Add AdServer if provided within LiveAdReplacement
+		// Add AdServer if provided within LiveAdReplacement.
 		if !plan.LiveAdReplacement.AdServer.ID.IsNull() {
 			serviceData.LiveAdReplacement.AdServer = &broadpeakio.Identifiable{
 				Id: uint(plan.LiveAdReplacement.AdServer.ID.ValueInt64()),
 			}
 		}
 
-		// Add GapFiller if provided
+		// Add GapFiller if provided.
 		if !plan.LiveAdReplacement.GapFiller.ID.IsNull() {
 			serviceData.LiveAdReplacement.GapFiller = &broadpeakio.Identifiable{
 				Id: uint(plan.LiveAdReplacement.GapFiller.ID.ValueInt64()),
 			}
 		}
 
-		// Add SpotAware if provided
+		// Add SpotAware if provided.
 		if !plan.LiveAdReplacement.SpotAware.Mode.IsNull() {
 			serviceData.LiveAdReplacement.SpotAware = broadpeakio.SpotAware{
 				Mode: plan.LiveAdReplacement.SpotAware.Mode.ValueString(),
@@ -878,7 +866,7 @@ func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.Up
 		}
 	}
 
-	// Add ServerSideAdTracking if provided
+	// Add ServerSideAdTracking if provided.
 	if plan.ServerSideAdTracking != nil {
 		serviceData.ServerSideAdTracking = &broadpeakio.ServerSideAdTracking{
 			Enable:                          plan.ServerSideAdTracking.Enable.ValueBool(),
@@ -895,12 +883,12 @@ func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.Up
 		}
 	}
 
-	// Retrieve ID from plan/state
+	// Retrieve ID from plan/state.
 	adinsertionID := uint(plan.ID.ValueInt64())
 
 	tflog.Debug(ctx, "Update - Update Doc sent to BPKIO", map[string]interface{}{"id": adinsertionID, "updates": serviceData})
 
-	// Update existing adserver
+	// Update existing adserver.
 	_, err := r.client.UpdateAdInsertion(adinsertionID, serviceData)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -910,7 +898,7 @@ func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	// Fetch updated items from GetAdInsertion
+	// Fetch updated items from GetAdInsertion.
 	service, err := r.client.GetAdInsertion(adinsertionID)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -920,20 +908,20 @@ func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	// Convert the []string to types.List
+	// Convert the []string to types.List.
 	tagsList, diags := types.ListValueFrom(ctx, types.StringType, service.Tags)
 	if diags.HasError() {
 		resp.Diagnostics.Append(diags...)
 		return
 	}
 
-	// Map response body to schema and populate Computed attribute values
+	// Map response body to schema and populate Computed attribute values.
 	result := serviceAdInsertionResourceModel{
 		ID:                  types.Int64Value(int64(service.Id)),
 		Name:                types.StringValue(service.Name),
 		Type:                types.StringValue(service.Type),
 		URL:                 types.StringValue(service.Url),
-		CreationDate:        types.StringValue(service.CreationDate), // Make sure these fields exist in your API response
+		CreationDate:        types.StringValue(service.CreationDate),
 		UpdateDate:          types.StringValue(service.UpdateDate),
 		State:               types.StringValue(service.State),
 		Tags:                tagsList,
@@ -991,7 +979,7 @@ func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.Up
 		}
 	}
 
-	// Add ServerSideAdTracking if provided
+	// Add ServerSideAdTracking if provided.
 	if service.ServerSideAdTracking.Enable {
 		result.ServerSideAdTracking = &serverSideAdTrackingModel{
 			Enable:                          types.BoolValue(service.ServerSideAdTracking.Enable),
@@ -1008,7 +996,7 @@ func (r *serviceAdInsertionResource) Update(ctx context.Context, req resource.Up
 		}
 	}
 
-	// Set state to fully populated data
+	// Set state to fully populated data.
 	diags = resp.State.Set(ctx, result)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -1026,7 +1014,7 @@ func (r *serviceAdInsertionResource) Delete(ctx context.Context, req resource.De
 		return
 	}
 
-	// Delete existing adserver
+	// Delete existing adserver.
 	_, err := r.client.DeleteAdInsertion(uint(state.ID.ValueInt64()))
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -1039,10 +1027,10 @@ func (r *serviceAdInsertionResource) Delete(ctx context.Context, req resource.De
 
 // ImportState imports the resource state from the ID.
 func (r *serviceAdInsertionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Convert the ID from string to int64
+	// Convert the ID from string to int64.
 	idStr := req.ID
 
-	// Parse the ID string into an int
+	// Parse the ID string into an int.
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -1052,10 +1040,10 @@ func (r *serviceAdInsertionResource) ImportState(ctx context.Context, req resour
 		return
 	}
 
-	// Set the ID in the state
+	// Set the ID in the state.
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id)...)
 
-	// After importing the ID, the Read method will be called automatically to refresh the state
+	// After importing the ID, the Read method will be called automatically to refresh the state.
 }
 
 // serviceModel maps service schema data.

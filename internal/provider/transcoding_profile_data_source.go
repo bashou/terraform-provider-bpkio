@@ -16,17 +16,17 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// --------------------------------------------------------------------
-// Type assertions
-// --------------------------------------------------------------------
+// --------------------------------------------------------------------.
+// Type assertions.
+// --------------------------------------------------------------------.
 var (
 	_ datasource.DataSource              = &transcodingProfileDataSource{}
 	_ datasource.DataSourceWithConfigure = &transcodingProfileDataSource{}
 )
 
-// --------------------------------------------------------------------
-// Data-source definition
-// --------------------------------------------------------------------
+// --------------------------------------------------------------------.
+// Data-source definition.
+// --------------------------------------------------------------------.
 type transcodingProfileDataSource struct {
 	client *broadpeakio.BroadpeakClient
 }
@@ -35,9 +35,9 @@ func NewTranscodingProfileDataSource() datasource.DataSource {
 	return &transcodingProfileDataSource{}
 }
 
-// --------------------------------------------------------------------
-// Configure
-// --------------------------------------------------------------------
+// --------------------------------------------------------------------.
+// Configure.
+// --------------------------------------------------------------------.
 func (d *transcodingProfileDataSource) Configure(
 	_ context.Context,
 	req datasource.ConfigureRequest,
@@ -57,9 +57,9 @@ func (d *transcodingProfileDataSource) Configure(
 	d.client = c
 }
 
-// --------------------------------------------------------------------
-// Metadata
-// --------------------------------------------------------------------
+// --------------------------------------------------------------------.
+// Metadata.
+// --------------------------------------------------------------------.
 func (d *transcodingProfileDataSource) Metadata(
 	_ context.Context,
 	req datasource.MetadataRequest,
@@ -68,9 +68,9 @@ func (d *transcodingProfileDataSource) Metadata(
 	resp.TypeName = req.ProviderTypeName + "_transcoding_profile"
 }
 
-// --------------------------------------------------------------------
-// Schema
-// --------------------------------------------------------------------
+// --------------------------------------------------------------------.
+// Schema.
+// --------------------------------------------------------------------.
 func (d *transcodingProfileDataSource) Schema(
 	_ context.Context,
 	_ datasource.SchemaRequest,
@@ -95,15 +95,15 @@ func (d *transcodingProfileDataSource) Schema(
 	}
 }
 
-// --------------------------------------------------------------------
-// Read
-// --------------------------------------------------------------------
+// --------------------------------------------------------------------.
+// Read.
+// --------------------------------------------------------------------.
 func (d *transcodingProfileDataSource) Read(
 	ctx context.Context,
 	req datasource.ReadRequest,
 	resp *datasource.ReadResponse,
 ) {
-	// Parse ID from config
+	// Parse ID from config.
 	var id int64
 	diags := req.Config.GetAttribute(ctx, path.Root("id"), &id)
 	resp.Diagnostics.Append(diags...)
@@ -111,7 +111,7 @@ func (d *transcodingProfileDataSource) Read(
 		return
 	}
 
-	// Fetch profile from API
+	// Fetch profile from API.
 	p, err := d.client.GetTranscodingProfile(uint(id))
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -121,11 +121,11 @@ func (d *transcodingProfileDataSource) Read(
 		return
 	}
 
-	// Build state
+	// Build state.
 	state := transcodingProfileDataSourceModel{
 		ID:         types.Int64Value(int64(p.Id)),
 		Name:       types.StringValue(p.Name),
-		Content:    types.StringValue(string(p.Content)),
+		Content:    types.StringValue(p.Content),
 		InternalId: types.StringValue(p.InternalId),
 	}
 
@@ -133,9 +133,9 @@ func (d *transcodingProfileDataSource) Read(
 	resp.Diagnostics.Append(diags...)
 }
 
-// --------------------------------------------------------------------
-// State model
-// --------------------------------------------------------------------
+// --------------------------------------------------------------------.
+// State model.
+// --------------------------------------------------------------------.
 type transcodingProfileDataSourceModel struct {
 	ID         types.Int64  `tfsdk:"id"`
 	Name       types.String `tfsdk:"name"`

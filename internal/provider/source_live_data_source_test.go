@@ -61,7 +61,7 @@ func TestFlattenSources(t *testing.T) {
 	}
 }
 
-// tiny helper
+// tiny helper.
 func ptr[T any](v T) *T {
 	return &v
 }
