@@ -82,5 +82,5 @@ jobs:
       - env:
           TF_ACC: "1"
           BPKIO_API_KEY: ${{ secrets.BPKIO_API_KEY }}
-        run: go test -v -cover ./internal/provider/
+        run: go test -v ./internal/provider/
         timeout-minutes: 10
