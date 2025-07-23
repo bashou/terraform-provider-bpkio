@@ -3,12 +3,12 @@
 page_title: "bpkio_service_ad_insertion Resource - bpkio"
 subcategory: ""
 description: |-
-  Manages Ad Insertion service creation (see https://developers.broadpeak.io/reference/adinsertioncontroller_create_v1).
+  Manages Ad Insertion service creation (see https://developers.broadpeak.io/reference/adinsertiontroller_create_v1).
 ---
 
 # bpkio_service_ad_insertion (Resource)
 
-Manages Ad Insertion service creation (see https://developers.broadpeak.io/reference/adinsertioncontroller_create_v1).
+Manages Ad Insertion service creation (see https://developers.broadpeak.io/reference/adinsertiontroller_create_v1).
 
 ## Example Usage
 
