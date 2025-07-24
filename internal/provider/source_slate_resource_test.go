@@ -17,17 +17,17 @@ func TestAccSourceSlate_Basic(t *testing.T) {
 	if apiKey == "" {
 		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
 	}
-
 	resourceName := "bpkio_source_slate.test"
+	name := "tf-acc-test-slate-" + randomSuffix()
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviderFactories(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccSourceSlateConfig(apiKey),
+				Config: testAccSourceSlateConfig(apiKey, name),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(resourceName, "name", "tf-acc-test-slate"),
+					resource.TestCheckResourceAttr(resourceName, "name", name),
 					resource.TestCheckResourceAttr(resourceName, "url", "https://bpkiosamples.s3.eu-west-1.amazonaws.com/broadpeakio-slate.jpg"),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "type"),
@@ -37,17 +37,17 @@ func TestAccSourceSlate_Basic(t *testing.T) {
 	})
 }
 
-func testAccSourceSlateConfig(apiKey string) string {
+func testAccSourceSlateConfig(apiKey, name string) string {
 	return fmt.Sprintf(`
 provider "bpkio" {
   api_key = "%s"
 }
 
 resource "bpkio_source_slate" "test" {
-  name = "tf-acc-test-slate"
+  name = "%s"
   url  = "https://bpkiosamples.s3.eu-west-1.amazonaws.com/broadpeakio-slate.jpg"
 }
-`, apiKey)
+`, apiKey, name)
 }
 
 func TestAccSourceSlate_InvalidURL(t *testing.T) {
@@ -57,6 +57,7 @@ func TestAccSourceSlate_InvalidURL(t *testing.T) {
 	}
 
 	badURL := "https://this-url-does-not-exist.broadpeak.io/foo.jpg"
+	name := "tf-acc-test-invalid-" + randomSuffix()
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -69,10 +70,10 @@ provider "bpkio" {
 }
 
 resource "bpkio_source_slate" "test" {
-  name = "tf-acc-test-invalid"
+  name = "%s"
   url  = "%s"
 }
-`, apiKey, badURL),
+`, apiKey, name, badURL),
 				ExpectError: regexp.MustCompile(`(?i)400|not found|invalid|unreachable`),
 			},
 		},
@@ -86,9 +87,8 @@ func TestAccSourceSlate_Update(t *testing.T) {
 	}
 
 	resourceName := "bpkio_source_slate.test"
-
-	initialName := "tf-acc-test-slate-update"
-	updatedName := "tf-acc-test-slate-updated"
+	initialName := "tf-acc-test-slate-update-" + randomSuffix()
+	updatedName := "tf-acc-test-slate-updated-" + randomSuffix()
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -96,9 +96,7 @@ func TestAccSourceSlate_Update(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
-provider "bpkio" {
-  api_key = "%s"
-}
+provider "bpkio" { api_key = "%s" }
 resource "bpkio_source_slate" "test" {
   name = "%s"
   url  = "https://bpkiosamples.s3.eu-west-1.amazonaws.com/broadpeakio-slate.jpg"
@@ -112,9 +110,7 @@ resource "bpkio_source_slate" "test" {
 			},
 			{
 				Config: fmt.Sprintf(`
-provider "bpkio" {
-  api_key = "%s"
-}
+provider "bpkio" { api_key = "%s" }
 resource "bpkio_source_slate" "test" {
   name = "%s"
   url  = "https://bpkiosamples.s3.eu-west-1.amazonaws.com/broadpeakio-slate.jpg"
@@ -137,7 +133,7 @@ func TestAccSourceSlate_Import(t *testing.T) {
 	}
 
 	resourceName := "bpkio_source_slate.test"
-	name := "tf-acc-test-slate-import"
+	name := "tf-acc-test-slate-import-" + randomSuffix()
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -145,9 +141,7 @@ func TestAccSourceSlate_Import(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
-provider "bpkio" {
-  api_key = "%s"
-}
+provider "bpkio" { api_key = "%s" }
 resource "bpkio_source_slate" "test" {
   name = "%s"
   url  = "https://bpkiosamples.s3.eu-west-1.amazonaws.com/broadpeakio-slate.jpg"
@@ -190,6 +184,7 @@ func TestAccSourceSlate_MissingURL(t *testing.T) {
 	if apiKey == "" {
 		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
 	}
+	name := "tf-acc-test-missing-url-" + randomSuffix()
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviderFactories(),
@@ -198,9 +193,9 @@ func TestAccSourceSlate_MissingURL(t *testing.T) {
 				Config: fmt.Sprintf(`
 provider "bpkio" { api_key = "%s" }
 resource "bpkio_source_slate" "test" {
-  name = "tf-acc-test-missing-url"
+  name = "%s"
 }
-`, apiKey),
+`, apiKey, name),
 				ExpectError: regexp.MustCompile(`(?i)The argument\s+"url"\s+is required`),
 			},
 		},
@@ -212,7 +207,7 @@ func TestAccSourceSlate_DuplicateNameURL(t *testing.T) {
 	if apiKey == "" {
 		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
 	}
-	name := "tf-acc-test-duplicate"
+	name := "tf-acc-test-duplicate-" + randomSuffix()
 	url := "https://bpkiosamples.s3.eu-west-1.amazonaws.com/broadpeakio-slate.jpg"
 
 	resource.Test(t, resource.TestCase{
@@ -222,7 +217,6 @@ func TestAccSourceSlate_DuplicateNameURL(t *testing.T) {
 			{
 				Config: fmt.Sprintf(`
 provider "bpkio" { api_key = "%s" }
-
 resource "bpkio_source_slate" "first" {
   name = "%s"
   url  = "%s"
@@ -245,12 +239,13 @@ func TestAccSourceSlate_ComputedFields(t *testing.T) {
 		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
 	}
 	resourceName := "bpkio_source_slate.test"
+	name := "tf-acc-test-computed-" + randomSuffix()
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviderFactories(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccSourceSlateConfig(apiKey),
+				Config: testAccSourceSlateConfig(apiKey, name),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "type"),
@@ -267,6 +262,7 @@ func TestAccSourceSlate_MinimalConfig(t *testing.T) {
 		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
 	}
 	resourceName := "bpkio_source_slate.minimal"
+	name := "tf-acc-test-minimal-" + randomSuffix()
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviderFactories(),
@@ -275,12 +271,12 @@ func TestAccSourceSlate_MinimalConfig(t *testing.T) {
 				Config: fmt.Sprintf(`
 provider "bpkio" { api_key = "%s" }
 resource "bpkio_source_slate" "minimal" {
-  name = "tf-acc-test-minimal"
+  name = "%s"
   url  = "https://bpkiosamples.s3.eu-west-1.amazonaws.com/broadpeakio-slate.jpg"
 }
-`, apiKey),
+`, apiKey, name),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(resourceName, "name", "tf-acc-test-minimal"),
+					resource.TestCheckResourceAttr(resourceName, "name", name),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "type"),
 					resource.TestCheckResourceAttrSet(resourceName, "format"),
@@ -295,7 +291,7 @@ func TestAccSourceSlate_LongNameAndSpecialChars(t *testing.T) {
 	if apiKey == "" {
 		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
 	}
-	longName := "tf-acc-test-超级长的名字-🚀-abcdefghijklmnopqrstuvwxyz0123456789"
+	longName := fmt.Sprintf("tf-acc-test-超级长的名字-🚀-%s", randomSuffix())
 	resourceName := "bpkio_source_slate.special"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

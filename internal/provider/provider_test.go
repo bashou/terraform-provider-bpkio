@@ -4,8 +4,11 @@
 package provider
 
 import (
+	"fmt"
+	"math/rand"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
@@ -26,6 +29,10 @@ func testAccPreCheck(t *testing.T) {
 	if v := os.Getenv("BPKIO_API_KEY"); v == "" {
 		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
 	}
+}
+
+func randomSuffix() string {
+	return fmt.Sprintf("%06d", rand.New(rand.NewSource(time.Now().UnixNano())).Intn(1000000))
 }
 
 // Acceptance test.
