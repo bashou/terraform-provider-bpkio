@@ -14,9 +14,9 @@ import (
 
 var (
 	SlateURL     = "https://bpkiosamples.s3.eu-west-1.amazonaws.com/broadpeakio-slate.jpg"
-	LiveURL      = "https://hls-radio-s3.nextradiotv.com/olyzon/delayed/master.m3u8"
+	LiveURL      = "https://origin.broadpeak.io/bpk-tv/bpkiofficial/hlsv3/index.m3u8"
 	LiveURLOther = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
-	AdServerURL  = "https://vast-prep.staging.olyzon.tv/sources/1042586b/serve"
+	AdServerURL  = "https://bpkiovast.s3.eu-west-1.amazonaws.com/vastmultibpkio"
 )
 
 func TestAccServiceAdInsertion_Basic(t *testing.T) {
