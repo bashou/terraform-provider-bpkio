@@ -123,7 +123,7 @@ resource "bpkio_service_ad_insertion" "this_no_preroll" {
 
 # ID 53826
 resource "bpkio_service_ad_insertion" "test_free" {
-  name = "[TEST TERRAFORM] BFM2 - Production - FAI FREE - FR - back(eu-west-3)"
+  name = "[TEST TERRAFORM] New Service"
 
   advanced_options = {
     authorization_header = {
@@ -157,11 +157,7 @@ resource "bpkio_service_ad_insertion" "test_free" {
   }
 
   tags = [
-    "production",
-    "bfm2",
-    "fai",
-    "free",
-    "video",
+    "test",
   ]
 }
 

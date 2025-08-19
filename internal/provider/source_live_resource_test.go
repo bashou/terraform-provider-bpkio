@@ -29,7 +29,7 @@ func TestAccSourceLive_Basic(t *testing.T) {
 				Config: testAccSourceLiveConfig(apiKey, liveName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(resourceName, "name", liveName),
-					resource.TestCheckResourceAttr(resourceName, "url", "https://hls-radio-s3.nextradiotv.com/olyzon/delayed/master.m3u8"),
+					resource.TestCheckResourceAttr(resourceName, "url", "https://origin.broadpeak.io/bpk-tv/bpkiofficial/hlsv3/index.m3u8"),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "type"),
 				),
@@ -46,7 +46,7 @@ provider "bpkio" {
 
 resource "bpkio_source_live" "test" {
   name = "%s"
-  url  = "https://hls-radio-s3.nextradiotv.com/olyzon/delayed/master.m3u8"
+  url  = "https://origin.broadpeak.io/bpk-tv/bpkiofficial/hlsv3/index.m3u8"
 }
 `, apiKey, name)
 }
@@ -101,7 +101,7 @@ provider "bpkio" {
 }
 
 resource "bpkio_source_live" "test" {
-  url = "https://hls-radio-s3.nextradiotv.com/olyzon/delayed/master.m3u8"
+  url = "https://origin.broadpeak.io/bpk-tv/bpkiofficial/hlsv3/index.m3u8"
 }
 `, apiKey),
 				ExpectError: regexp.MustCompile(`(?s)The argument "name" is required, but no definition was found.`),
@@ -139,12 +139,12 @@ provider "bpkio" {
 
 resource "bpkio_source_live" "first" {
   name = "%s"
-  url  = "https://hls-radio-s3.nextradiotv.com/olyzon/delayed/master.m3u8"
+  url  = "https://origin.broadpeak.io/bpk-tv/bpkiofficial/hlsv3/index.m3u8"
 }
 
 resource "bpkio_source_live" "second" {
   name = "%s"
-  url  = "https://hls-radio-s3.nextradiotv.com/olyzon/delayed/master.m3u8"
+  url  = "https://origin.broadpeak.io/bpk-tv/bpkiofficial/hlsv3/index.m3u8"
 }
 `, apiKey, name, name)
 }
@@ -219,7 +219,7 @@ provider "bpkio" {
 
 resource "bpkio_source_live" "test" {
   name = "%s"
-  url  = "https://hls-radio-s3.nextradiotv.com/olyzon/delayed/master.m3u8"
+  url  = "https://origin.broadpeak.io/bpk-tv/bpkiofficial/hlsv3/index.m3u8"
 }
 `, apiKey, name),
 				Check: resource.ComposeTestCheckFunc(
