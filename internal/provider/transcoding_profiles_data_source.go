@@ -122,7 +122,7 @@ func (d *transcodingProfilesDataSource) Read(
 			map[string]attr.Value{
 				"id":          types.Int64Value(int64(p.Id)),
 				"name":        types.StringValue(p.Name),
-				"content":     types.StringValue(p.Content),
+				"content":     types.StringValue(string(p.Content)),
 				"internal_id": types.StringValue(p.InternalId),
 			},
 		)

@@ -13,27 +13,27 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-// Valid Ad server.
-var adServerURL = "https://vast-prep.staging.olyzon.tv/sources/1042586b/serve"
+var (
+	adServerURL = "https://vast-prep.staging.olyzon.tv/sources/1042586b/serve"
+)
 
 func TestAccSourceAdServer_Basic(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
 	if apiKey == "" {
 		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
 	}
-	resourceName := "bpkio_source_adserver.test"
 
-	// This URL MUST point to a real, working adserver in your environment.
-	adServerURL := "https://vast-prep.staging.olyzon.tv/sources/1042586b/serve"
+	name := "tf-acc-test-adserver-" + randomSuffix()
+	resourceName := "bpkio_source_adserver.test"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviderFactories(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccSourceAdServerConfig(apiKey, adServerURL),
+				Config: testAccSourceAdServerConfig(apiKey, adServerURL, name),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(resourceName, "name", "tf-acc-test-adserver"),
+					resource.TestCheckResourceAttr(resourceName, "name", name),
 					resource.TestCheckResourceAttr(resourceName, "url", adServerURL),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "type"),
@@ -41,7 +41,7 @@ func TestAccSourceAdServer_Basic(t *testing.T) {
 			},
 			{
 				// Test update: Change description and check result
-				Config: testAccSourceAdServerConfigUpdate(apiKey, adServerURL),
+				Config: testAccSourceAdServerConfigUpdate(apiKey, adServerURL, name),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(resourceName, "description", "updated by acceptance test"),
 				),
@@ -50,42 +50,46 @@ func TestAccSourceAdServer_Basic(t *testing.T) {
 	})
 }
 
-func testAccSourceAdServerConfig(apiKey, url string) string {
+func testAccSourceAdServerConfig(apiKey, url, name string) string {
 	return fmt.Sprintf(`
 provider "bpkio" {
   api_key = "%s"
 }
 
 resource "bpkio_source_adserver" "test" {
-  name = "tf-acc-test-adserver"
+  name = "%s"
   url  = "%s"
 }
-`, apiKey, url)
+`, apiKey, name, url)
 }
 
-func testAccSourceAdServerConfigUpdate(apiKey, url string) string {
+func testAccSourceAdServerConfigUpdate(apiKey, url, name string) string {
 	return fmt.Sprintf(`
 provider "bpkio" {
   api_key = "%s"
 }
 
 resource "bpkio_source_adserver" "test" {
-  name        = "tf-acc-test-adserver"
+  name        = "%s"
   url         = "%s"
   description = "updated by acceptance test"
 }
-`, apiKey, url)
+`, apiKey, name, url)
 }
 
 func TestAccSourceAdServer_ComputedFields(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
+	if apiKey == "" {
+		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
+	}
+	name := "tf-acc-test-adserver-" + randomSuffix()
 	resourceName := "bpkio_source_adserver.test"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviderFactories(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccSourceAdServerConfig(apiKey, adServerURL),
+				Config: testAccSourceAdServerConfig(apiKey, adServerURL, name),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "type"),
@@ -97,15 +101,19 @@ func TestAccSourceAdServer_ComputedFields(t *testing.T) {
 
 func TestAccSourceAdServer_MinimalConfig(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
+	if apiKey == "" {
+		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
+	}
+	name := "tf-acc-test-adserver-" + randomSuffix()
 	resourceName := "bpkio_source_adserver.test"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviderFactories(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccSourceAdServerConfig(apiKey, adServerURL),
+				Config: testAccSourceAdServerConfig(apiKey, adServerURL, name),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(resourceName, "name", "tf-acc-test-adserver"),
+					resource.TestCheckResourceAttr(resourceName, "name", name),
 					resource.TestCheckResourceAttr(resourceName, "url", adServerURL),
 				),
 			},
@@ -115,6 +123,9 @@ func TestAccSourceAdServer_MinimalConfig(t *testing.T) {
 
 func TestAccSourceAdServer_MissingName(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
+	if apiKey == "" {
+		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
+	}
 	config := fmt.Sprintf(`
 provider "bpkio" {
   api_key = "%s"
@@ -138,6 +149,9 @@ resource "bpkio_source_adserver" "test" {
 
 func TestAccSourceAdServer_LongSpecialName(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
+	if apiKey == "" {
+		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
+	}
 	longName := strings.Repeat("x", 101) // >100 chars to trigger validation error
 	config := fmt.Sprintf(`
 provider "bpkio" {
@@ -163,7 +177,10 @@ resource "bpkio_source_adserver" "test" {
 
 func TestAccSourceAdServer_DuplicateNameURL(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
-	unique := "tf-acc-dupe"
+	if apiKey == "" {
+		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
+	}
+	unique := "tf-acc-dupe-" + randomSuffix()
 	dupeConfig := fmt.Sprintf(`
 provider "bpkio" {
   api_key = "%s"
@@ -191,13 +208,17 @@ resource "bpkio_source_adserver" "second" {
 
 func TestAccSourceAdServer_QueryParameters(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
+	if apiKey == "" {
+		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
+	}
+	name := "tf-acc-test-adserver-" + randomSuffix()
 	resourceName := "bpkio_source_adserver.test"
 	config := fmt.Sprintf(`
 provider "bpkio" {
   api_key = "%s"
 }
 resource "bpkio_source_adserver" "test" {
-  name = "tf-acc-test-adserver"
+  name = "%s"
   url  = "%s"
   query_parameters = [
     {
@@ -212,7 +233,7 @@ resource "bpkio_source_adserver" "test" {
     }
   ]
 }
-`, apiKey, adServerURL)
+`, apiKey, name, adServerURL)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviderFactories(),
@@ -229,16 +250,20 @@ resource "bpkio_source_adserver" "test" {
 
 func TestAccSourceAdServer_InvalidURL(t *testing.T) {
 	apiKey := os.Getenv("BPKIO_API_KEY")
+	if apiKey == "" {
+		t.Fatal("BPKIO_API_KEY must be set for acceptance tests")
+	}
+	name := "tf-acc-test-adserver-" + randomSuffix()
 	badURL := "https://this-url-will-not-exist.example.com"
 	config := fmt.Sprintf(`
 provider "bpkio" {
   api_key = "%s"
 }
 resource "bpkio_source_adserver" "test" {
-  name = "tf-acc-test-adserver"
+  name = "%s"
   url  = "%s"
 }
-`, apiKey, badURL)
+`, apiKey, name, badURL)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviderFactories(),

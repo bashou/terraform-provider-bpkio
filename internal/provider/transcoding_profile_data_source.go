@@ -125,7 +125,7 @@ func (d *transcodingProfileDataSource) Read(
 	state := transcodingProfileDataSourceModel{
 		ID:         types.Int64Value(int64(p.Id)),
 		Name:       types.StringValue(p.Name),
-		Content:    types.StringValue(p.Content),
+		Content:    types.StringValue(string(p.Content)),
 		InternalId: types.StringValue(p.InternalId),
 	}
 
