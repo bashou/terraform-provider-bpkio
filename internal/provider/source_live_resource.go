@@ -96,6 +96,7 @@ func (r *sourceLiveResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Description: "The URL of the source live.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"format": schema.StringAttribute{
