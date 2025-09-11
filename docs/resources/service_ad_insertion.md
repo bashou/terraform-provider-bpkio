@@ -123,7 +123,7 @@ resource "bpkio_service_ad_insertion" "this_no_preroll" {
 
 # ID 53826
 resource "bpkio_service_ad_insertion" "test_free" {
-  name = "[TEST TERRAFORM] New Service"
+  name = "[TEST TERRAFORM] New service test"
 
   advanced_options = {
     authorization_header = {
