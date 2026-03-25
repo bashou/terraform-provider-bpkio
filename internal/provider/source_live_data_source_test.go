@@ -7,7 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	broadpeakio "github.com/bashou/bpkio-go-sdk"
+	"broadpeakio"
+
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 

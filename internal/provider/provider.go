@@ -7,7 +7,7 @@ import (
 	"context"
 	"os"
 
-	broadpeakio "github.com/bashou/bpkio-go-sdk"
+	"broadpeakio"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -146,7 +146,7 @@ func (p *bpkioProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 	// Create a new bpkio client using the configuration values
 	//TODO: Find a way to test key
-	client := broadpeakio.MakeClient(api_key)
+	client := broadpeakio.MakeClient(api_key, endpoint)
 	//if err != nil {
 	//	resp.Diagnostics.AddError(
 	//		"Unable to Create bpkio API Client",

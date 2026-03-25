@@ -3,7 +3,7 @@ module bpkio-terraform-provider
 go 1.24.4
 
 require (
-	github.com/bashou/bpkio-go-sdk v1.0.2
+	broadpeakio v1.1.0
 	github.com/hashicorp/terraform-plugin-framework v1.15.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.18.0
 	github.com/hashicorp/terraform-plugin-go v0.28.0
@@ -68,3 +68,5 @@ require (
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace broadpeakio => github.com/bashou/bpkio-go-sdk v1.1.0
