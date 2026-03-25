@@ -7,7 +7,7 @@ import (
 	"context"
 	"os"
 
-	broadpeakio "github.com/bashou/bpkio-go-sdk"
+	"broadpeakio"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"

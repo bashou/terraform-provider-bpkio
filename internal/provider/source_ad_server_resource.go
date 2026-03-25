@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strconv"
 
-	broadpeakio "github.com/bashou/bpkio-go-sdk"
+	"broadpeakio"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
